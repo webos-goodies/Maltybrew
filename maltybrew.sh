@@ -52,7 +52,7 @@ function maltybrew_new {
 # \$1: enter or exit
 # \$2: ~/.maltybrew/<env-name>
 
-if [ \$1 == enter ]; then
+if [ \${1%%-*} == enter ]; then
 
     :
     # Put additional initializations here.
@@ -62,7 +62,7 @@ if [ \$1 == enter ]; then
     #export ORIGINAL_LANG=\$LANG
     #export LANG=C
 
-else
+elif [ \${1%%-*} == exit ]; then
 
     :
     # Recover the original environment.
