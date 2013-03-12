@@ -61,13 +61,6 @@ if [ \$1 == enter ]; then
     #
     #export ORIGINAL_LANG=\$LANG
     #export LANG=C
-    #
-    #mysql.server status > /dev/null
-    #if [ \$? -ne 0 ]; then
-    #    mysql.server start
-    #    MYSQL_SHOULD_STOP=true
-    #fi
-
 
 else
 
@@ -82,10 +75,6 @@ else
     #    unset LANG
     #fi
     #unset ORIGINAL_LANG
-    #
-    #if [ \$MYSQL_SHOULD_STOP ]; then
-    #    mysql.server stop
-    #fi
 
 fi
 EOF
