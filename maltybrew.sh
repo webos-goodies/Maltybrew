@@ -94,7 +94,7 @@ function maltybrew_init {
 
         export MALTYBREW_NAME=$1
         export DYLD_LIBRARY_PATH=$ROOT/lib:$DYLD_LIBRARY_PATH
-        export PATH=$ROOT/bin:$PATH
+        export PATH=$ROOT/bin:$ROOT/sbin:$PATH
 
         if [ -f $ROOT/maltyrc ]; then
             . $ROOT/maltyrc enter $ROOT
