@@ -153,6 +153,7 @@ function maltybrew_error {
         4 ) echo "Failed to install homebrew into $MALTYBREW_HOME/$2." >&2 ;;
         5 ) echo "$MALTYBREW_HOME/$2 is not exist nor a directory." >&2 ;;
         6 ) echo "You are not drunk." >&2 ;;
+        7 ) echo "Usage: maltybrew exec <envname> <command> [arguments...]" >&2 ;;
         * ) echo "Unknown error." >&2 ;;
     esac
     if [ -z $3 ]; then
@@ -209,6 +210,25 @@ elif [ $1 == switch_inplace ]; then
     fi
     maltybrew_init $2
     maltybrew_error $? $2 no
+
+elif [ $1 == exec ]; then
+
+    if [ $# -le 2 ]; then
+        maltybrew_error 7 $2
+    fi
+    if [ $MALTYBREW_NAME ]; then
+        maltybrew_cleanup
+    fi
+    maltybrew_init $2
+    maltybrew_error $? $2
+
+    shift
+    shift
+    $SHELL -c "$*"
+
+    if [ $MALTYBREW_NAME ]; then
+        maltybrew_cleanup
+    fi
 
 else
 
