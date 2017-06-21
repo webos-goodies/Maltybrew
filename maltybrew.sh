@@ -39,7 +39,7 @@ function maltybrew_new {
         return 3
     fi
 
-    curl -L https://github.com/mxcl/homebrew/tarball/master | tar xz --strip 1 -C $ROOT
+    curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C $ROOT
     if [ $? -ne 0 ]; then
         return 4
     fi
