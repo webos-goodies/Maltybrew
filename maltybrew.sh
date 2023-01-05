@@ -25,6 +25,12 @@ if [ -z $MALTYBREW_HOME ]; then
     MALTYBREW_HOME=$HOME/.maltybrew
 fi
 
+if [ "$(uname)" == 'Darwin' ]; then
+    MALTYBREW_OS='Mac'
+else
+    MALTYBREW_OS='Linux'
+fi
+
 function maltybrew_new {
     local ROOT=$MALTYBREW_HOME/$1
 
@@ -89,12 +95,18 @@ function maltybrew_init {
         return 1
     elif [ -d $ROOT ]; then
 
-        export MALTYBREW_ORIGINAL_PATH=$PATH
-        export MALTYBREW_ORIGINAL_LIBRARY_PATH=$DYLD_LIBRARY_PATH
-
         export MALTYBREW_NAME=$1
-        export DYLD_LIBRARY_PATH=$ROOT/lib:$DYLD_LIBRARY_PATH
+
+        export MALTYBREW_ORIGINAL_PATH=$PATH
         export PATH=$ROOT/bin:$ROOT/sbin:$PATH
+
+        if [ $MALTYBREW_OS == 'Mac' ]; then
+            export MALTYBREW_ORIGINAL_LIBRARY_PATH=$DYLD_LIBRARY_PATH
+            export DYLD_LIBRARY_PATH=$ROOT/lib:$DYLD_LIBRARY_PATH
+        else
+            export MALTYBREW_ORIGINAL_LIBRARY_PATH=$LD_LIBRARY_PATH
+            export LD_LIBRARY_PATH=$ROOT/lib:$LD_LIBRARY_PATH
+        fi
 
         if [ -f $ROOT/maltyrc ]; then
             . $ROOT/maltyrc enter $ROOT
@@ -118,10 +130,18 @@ function maltybrew_cleanup {
 
         export PATH=$MALTYBREW_ORIGINAL_PATH
 
-        if [ $MALTYBREW_ORIGINAL_LIBRARY_PATH ]; then
-            export DYLD_LIBRARY_PATH=$MALTYBREW_ORIGINAL_LIBRARY_PATH
+        if [ $MALTYBREW_OS == 'Mac' ]; then
+            if [ $MALTYBREW_ORIGINAL_LIBRARY_PATH ]; then
+                export DYLD_LIBRARY_PATH=$MALTYBREW_ORIGINAL_LIBRARY_PATH
+            else
+                unset DYLD_LIBRARY_PATH
+            fi
         else
-            unset DYLD_LIBRARY_PATH
+            if [ $MALTYBREW_ORIGINAL_LIBRARY_PATH ]; then
+                export LD_LIBRARY_PATH=$MALTYBREW_ORIGINAL_LIBRARY_PATH
+            else
+                unset LD_LIBRARY_PATH
+            fi
         fi
 
         unset MALTYBREW_ORIGINAL_PATH
